@@ -107,7 +107,7 @@ const handleWorldUpdate = (payload) => {
 let socket = null;
 const connect = () => {
   const protocol = window.location.protocol === "https:" ? "wss" : "ws";
-  socket = new WebSocket(`${protocol}://${window.location.host}`);
+  socket = new WebSocket(`${protocol}://${window.location.host}/ws`);
 
   socket.addEventListener("open", () => {
     updateConnectionStatus("Онлайн", true);
