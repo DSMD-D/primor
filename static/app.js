@@ -7,11 +7,15 @@ const elements = {
   playersCount: document.getElementById("players-count"),
   globalBiomass: document.getElementById("global-biomass"),
   playerId: document.getElementById("player-id"),
+  playerHp: document.getElementById("player-hp"),
   playerBiomass: document.getElementById("player-biomass"),
   playerMutations: document.getElementById("player-mutations"),
   mutationTimeline: document.getElementById("mutation-timeline"),
   globalMutations: document.getElementById("global-mutations"),
   evolutionTree: document.getElementById("evolution-tree"),
+  worldMap: document.getElementById("world-map"),
+  attackButton: document.getElementById("attack-button"),
+  controlButtons: document.querySelectorAll("[data-direction]"),
 };
 
 const socket = io({
@@ -29,12 +33,14 @@ socket.on("state", (payload) => {
     renderPlayer(payload.player);
   }
   renderWorld(payload.world);
+  renderMap(payload.world);
   renderEvolution();
 });
 
 function renderPlayer(player) {
   elements.playerBiomass.textContent = player.biomass;
   elements.playerMutations.textContent = player.mutations.length;
+  elements.playerHp.textContent = player.hp;
 
   if (!player.mutations.length) {
     elements.mutationTimeline.innerHTML =
@@ -68,6 +74,41 @@ function renderWorld(world) {
         `<div class="global-item"><span>${mutation}</span><strong>${count}</strong></div>`
     )
     .join("");
+}
+
+function renderMap(world) {
+  if (!world || !world.map) {
+    return;
+  }
+  const { width, height } = world.map;
+  const cells = Array.from({ length: width * height }, (_, index) => {
+    const cell = document.createElement("div");
+    cell.className = "map-cell";
+    cell.dataset.index = index;
+    return cell;
+  });
+
+  elements.worldMap.style.gridTemplateColumns = `repeat(${width}, minmax(24px, 1fr))`;
+  elements.worldMap.innerHTML = "";
+  cells.forEach((cell) => elements.worldMap.appendChild(cell));
+
+  (world.actors || []).forEach((actor) => {
+    const index = actor.y * width + actor.x;
+    const cell = cells[index];
+    if (!cell) {
+      return;
+    }
+    if (actor.id === state.playerId) {
+      cell.classList.add("you");
+    } else if (actor.is_bot) {
+      cell.classList.add("bot");
+    } else {
+      cell.classList.add("player");
+    }
+    const label = document.createElement("span");
+    label.textContent = actor.hp;
+    cell.appendChild(label);
+  });
 }
 
 function renderEvolution() {
@@ -126,3 +167,45 @@ function renderMutationButton(key, node, depth) {
 }
 
 renderEvolution();
+
+elements.controlButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    if (!state.playerId) {
+      return;
+    }
+    socket.emit("move", {
+      player: state.playerId,
+      direction: button.dataset.direction,
+    });
+  });
+});
+
+elements.attackButton.addEventListener("click", () => {
+  if (!state.playerId) {
+    return;
+  }
+  socket.emit("attack", { player: state.playerId });
+});
+
+document.addEventListener("keydown", (event) => {
+  if (!state.playerId) {
+    return;
+  }
+  const keyMap = {
+    w: "up",
+    a: "left",
+    s: "down",
+    d: "right",
+    ArrowUp: "up",
+    ArrowLeft: "left",
+    ArrowDown: "down",
+    ArrowRight: "right",
+  };
+  const direction = keyMap[event.key];
+  if (direction) {
+    socket.emit("move", { player: state.playerId, direction });
+  }
+  if (event.key === " ") {
+    socket.emit("attack", { player: state.playerId });
+  }
+});

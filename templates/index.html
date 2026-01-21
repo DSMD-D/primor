@@ -35,6 +35,10 @@
             <span class="label">Ваш ID</span>
             <strong id="player-id">подключение…</strong>
           </div>
+          <div>
+            <span class="label">HP</span>
+            <strong id="player-hp">10</strong>
+          </div>
         </div>
       </header>
 
@@ -62,6 +66,40 @@
             <p class="muted">Ожидаем первые данные от игроков.</p>
           </div>
         </article>
+
+        <article class="panel">
+          <h2>Управление</h2>
+          <p class="muted">
+            Используйте WASD или кнопки ниже. Атака действует по соседним клеткам.
+          </p>
+          <div class="controls">
+            <button class="control-button" data-direction="up">↑</button>
+            <div class="controls-row">
+              <button class="control-button" data-direction="left">←</button>
+              <button class="control-button" data-direction="down">↓</button>
+              <button class="control-button" data-direction="right">→</button>
+            </div>
+            <button class="control-button attack" id="attack-button">
+              Атаковать
+            </button>
+          </div>
+        </article>
+      </section>
+
+      <section class="map-section">
+        <div class="evolution-header">
+          <h2>Карта биома</h2>
+          <p class="subtitle">
+            Сражайтесь с ботами и другими игроками, удерживая позиции на общей
+            карте. Красные клетки — соперники, синие — вы.
+          </p>
+        </div>
+        <div id="world-map" class="world-map"></div>
+        <div class="legend">
+          <span class="legend-item legend-you">Вы</span>
+          <span class="legend-item legend-bot">Бот</span>
+          <span class="legend-item legend-player">Другой игрок</span>
+        </div>
       </section>
 
       <section class="evolution">
