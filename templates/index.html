@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Primor: Эволюция бактерий</title>
+    <link rel="stylesheet" href="/static/style.css" />
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js" defer></script>
+    <script defer>
+      window.EVOLUTION_TREE = {{ evolution_tree | tojson }};
+    </script>
+    <script src="/static/app.js" defer></script>
+  </head>
+  <body>
+    <main class="page">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Онлайн-среда общего сервера</p>
+          <h1>Эволюция бактерии в реальном времени</h1>
+          <p class="subtitle">
+            Создавайте уникальные линии развития, выбирая мутации, и наблюдайте за
+            общим биомом вместе с другими игроками.
+          </p>
+        </div>
+        <div class="status-card">
+          <div>
+            <span class="label">Игроков онлайн</span>
+            <strong id="players-count">0</strong>
+          </div>
+          <div>
+            <span class="label">Глобальная биомасса</span>
+            <strong id="global-biomass">0</strong>
+          </div>
+          <div>
+            <span class="label">Ваш ID</span>
+            <strong id="player-id">подключение…</strong>
+          </div>
+          <div>
+            <span class="label">HP</span>
+            <strong id="player-hp">10</strong>
+          </div>
+        </div>
+      </header>
+
+      <section class="panels">
+        <article class="panel">
+          <h2>Ваш организм</h2>
+          <div class="stats">
+            <div>
+              <span class="label">Биомасса</span>
+              <strong id="player-biomass">1</strong>
+            </div>
+            <div>
+              <span class="label">Мутаций</span>
+              <strong id="player-mutations">0</strong>
+            </div>
+          </div>
+          <div class="timeline" id="mutation-timeline">
+            <p class="muted">Пока нет мутаций. Выберите путь эволюции ниже.</p>
+          </div>
+        </article>
+
+        <article class="panel">
+          <h2>Глобальные тенденции</h2>
+          <div class="global-list" id="global-mutations">
+            <p class="muted">Ожидаем первые данные от игроков.</p>
+          </div>
+        </article>
+
+        <article class="panel">
+          <h2>Управление</h2>
+          <p class="muted">
+            Используйте WASD или кнопки ниже. Атака действует по соседним клеткам.
+          </p>
+          <div class="controls">
+            <button class="control-button" data-direction="up">↑</button>
+            <div class="controls-row">
+              <button class="control-button" data-direction="left">←</button>
+              <button class="control-button" data-direction="down">↓</button>
+              <button class="control-button" data-direction="right">→</button>
+            </div>
+            <button class="control-button attack" id="attack-button">
+              Атаковать
+            </button>
+          </div>
+        </article>
+      </section>
+
+      <section class="map-section">
+        <div class="evolution-header">
+          <h2>Карта биома</h2>
+          <p class="subtitle">
+            Сражайтесь с ботами и другими игроками, удерживая позиции на общей
+            карте. Красные клетки — соперники, синие — вы.
+          </p>
+        </div>
+        <div id="world-map" class="world-map"></div>
+        <div class="legend">
+          <span class="legend-item legend-you">Вы</span>
+          <span class="legend-item legend-bot">Бот</span>
+          <span class="legend-item legend-player">Другой игрок</span>
+        </div>
+      </section>
+
+      <section class="evolution">
+        <div class="evolution-header">
+          <h2>Дерево развития</h2>
+          <p class="subtitle">
+            Каждый выбор открывает дополнительные ветви. Путей много, комбинируйте
+            стратегию обороны, передвижения и метаболизма.
+          </p>
+        </div>
+        <div id="evolution-tree" class="evolution-tree"></div>
+      </section>
+
+      <section class="mobile-hint">
+        <h3>Удобно играть с телефона</h3>
+        <p>
+          Интерфейс адаптируется под мобильные экраны: крупные кнопки, компактные
+          блоки статистики и упрощенный список мутаций.
+        </p>
+      </section>
+    </main>
+  </body>
+</html>
